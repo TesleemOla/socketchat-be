@@ -3,6 +3,7 @@ import http from 'http';
 import logger from "morgan"
 import cors from "cors";
 import morgan from "morgan";
+import crypto from "crypto"
 
 
 
@@ -12,7 +13,7 @@ import mongoConnect from "./db/Db.js";
 
 // db(process.env.MONGO_URL)
 // routes
-
+import indexRouter from "./routes/index.Route.js"
 import userRouter from "./routes/UserRoute.js"
 // import 
 
@@ -38,8 +39,10 @@ app.use(express.urlencoded({ extended: false}))
 
 
 // connect to mongoDB
+// console.log(crypto.randomBytes(64).toString('hex'))
 mongoConnect()
 // routes
+app.use("/", indexRouter)
 app.use("/user", userRouter)
 
 
