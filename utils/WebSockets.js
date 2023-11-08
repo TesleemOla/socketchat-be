@@ -18,4 +18,18 @@ class WebSockets {
             client.leave(room)
         })
     }
+
+    subscribeOtherUser(room, otherUserId) {
+        const userSockets = this.filter(
+            (user) => user.userId === otherUserId
+        );
+        userSockets.map((userInfo) => {
+            const soccetConn = global.IDBObjectStore.sockets.connected(userInfo.socketId)
+            if (socketConn) {
+                socketConn.join(room)
+            }
+        })
+    }
 }
+
+export default new WebSockets();

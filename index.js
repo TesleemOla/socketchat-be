@@ -1,10 +1,8 @@
 import express from "express";
 import http from 'http';
-import logger from "morgan"
+import morgan from "morgan"
 import cors from "cors";
-import morgan from "morgan";
-import crypto from "crypto"
-
+import { Server} from "socket.io"
 
 
 //  mongo db connection
@@ -15,8 +13,8 @@ import mongoConnect from "./db/Db.js";
 // routes
 import indexRouter from "./routes/index.Route.js"
 import userRouter from "./routes/UserRoute.js"
-// import 
-
+// import websocket
+import WebSockets from "./utils/WebSockets.js"
 
 
 // middlewares
@@ -56,10 +54,15 @@ app.use("*",(req, res)=>{
 
 // create http server
 const server = http.createServer(app);
+// create server connection
 server.listen(PORT);
 server.on("listening",()=>{
     console.log(`Listening on port http://localhost:${PORT}`)
 })
+// create websocket connection
+const io = new Server({ })
+global.io =  io.listen(server);
+global.io.on('connection', WebSockets.connection)
 
 
 
