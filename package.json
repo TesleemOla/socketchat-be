@@ -1,28 +1,24 @@
 {
-  "name": "be",
+  "name": "chat-be",
   "version": "1.0.0",
-  "description": "",
+  "description": "chat application backend",
+  "license": "ISC",
+  "author": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "devStart": "nodemon index.js"
+    "start": "node --env-file=.env index.js",
+    "dev": "nodemon --env-file=.env index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@withvoid/make-validation": "^1.0.5",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.6.3",
+    "mongoose": "^8.12.1",
     "morgan": "^1.10.0",
-    "socket.io": "^4.7.2",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.9",
+    "socket.io": "^4.8.1",
+    "uuidv4": "^6.2.13"
   }
 }

@@ -1,70 +1,52 @@
-import express from "express";
-import http from 'http';
-import morgan from "morgan"
-import cors from "cors";
-import { Server} from "socket.io"
+import express from "express"
+import morgan from "morgan";
 
-
-//  mongo db connection
-
-import mongoConnect from "./db/Db.js";
-
-// db(process.env.MONGO_URL)
+// database
+import "./config/mongo.js"
 // routes
-import indexRouter from "./routes/index.Route.js"
-import userRouter from "./routes/UserRoute.js"
-// import websocket
-import WebSockets from "./utils/WebSockets.js"
-
-
+import indexRouter from "./routes/index.js";
+import userRouter from "./routes/users.js";
+import chatRoomRouter from "./routes/chatRoom.js";
+import deleteRouter from "./routes/delete.js";
 // middlewares
+import { decode } from './middlewares/jwt.js'
 
 
 
 
 const app = express()
 
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const port = process.env.PORT || 8000
 
-// Get port and save
-
-const PORT = process.env.port || 5000
-
-app.set("port",PORT);
-
-app.use(morgan("dev"))
-app.use(express.json())
-app.use(express.urlencoded({ extended: false}))
-
-
-// connect to mongoDB
-// console.log(crypto.randomBytes(64).toString('hex'))
-mongoConnect()
-// routes
-app.use("/", indexRouter)
-app.use("/user", userRouter)
+app.use("/", indexRouter);
+app.use("/users", userRouter);
+app.use("/room", decode, chatRoomRouter);
+app.use("/delete", deleteRouter);
 
 
-app.use("*",(req, res)=>{
+
+
+
+
+
+
+
+
+app.get("/",(req,res)=>{
+    return res.status(200).json({message:"Hello World"})
+})
+
+/** catch 404 and forward to error handler */
+app.use('*', (req, res) => {
     return res.status(404).json({
-    success: false,
-    message: "API endpoint doesnt exist"
+        success: false,
+        message: 'API endpoint doesnt exist'
+    })
+});
+
+app.listen(port,()=>{
+    console.log(`App now running on port ${port}`)
 })
-})
-
-
-// create http server
-const server = http.createServer(app);
-// create server connection
-server.listen(PORT);
-server.on("listening",()=>{
-    console.log(`Listening on port http://localhost:${PORT}`)
-})
-// create websocket connection
-const io = new Server({ })
-global.io =  io.listen(server);
-global.io.on('connection', WebSockets.connection)
-
-
-
-
-
