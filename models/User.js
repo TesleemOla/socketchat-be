@@ -11,23 +11,25 @@ export const USER_TYPES = {
 
 const userSchema = new Schema(
     {
-    _id: {
-        type: String,
-        default: ()=> uuidv4().replace(/\-/g,"")
-    },
     firstName: String,
     lastName: String,
     type: String,
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    }
 },{
     timestamps: true,
-    collection: "users"
+    collection: "users",
+    
 }
 )
 
-userSchema.statics.createUser = async function(firstName, lastName, type){
+userSchema.statics.createUser = async function(firstName, lastName, type, email){
     {
         try{
-            const user = await this.create({firstName, lastName, type})
+            const user = await this.create({firstName, lastName, type, email})
             return user.save()
         }
         catch(err){
@@ -39,6 +41,7 @@ userSchema.statics.createUser = async function(firstName, lastName, type){
 userSchema.statics.getUserById = async function(id){
     try{
         const user = await this.findOne({_id:id})
+        console.log(user)
         if (!user) throw ({ error: 'No user with this id found' });
         return user
     }
@@ -47,4 +50,23 @@ userSchema.statics.getUserById = async function(id){
     }
 }
 
+userSchema.statics.getAllUsers = async function(){
+    try{
+        const users = await this.find()
+        return users
+    }catch(error){
+        throw error
+    }
+}
+
 export default model("User", userSchema);
+
+userSchema.statics.deleteUser = async function(id){
+    try{
+        const user = await this.remove({ _id: id})
+        return user
+    }
+    catch(err){
+        throw err
+    }
+}
